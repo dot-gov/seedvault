@@ -10,6 +10,7 @@ import androidx.annotation.CallSuper
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
+import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
@@ -60,6 +61,7 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
     @CallSuper
     override fun onResume() {
         super.onResume()
+        MemoryLogger.log(applicationContext)
         // Activity results from the parent will get delivered before and might tell us to finish.
         // Don't start any new activities when that happens.
         // Note: onStart() can get called *before* results get delivered, so we use onResume() here
