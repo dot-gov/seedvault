@@ -7,6 +7,8 @@ package com.stevesoltys.seedvault.transport.backup
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.DatabaseUtils
+import android.database.DatabaseUtils.queryNumEntries
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE
 import android.database.sqlite.SQLiteOpenHelper
@@ -80,6 +82,7 @@ class KvDbManagerImpl(private val context: Context) : KvDbManager {
 }
 
 interface KVDb : AutoCloseable {
+    val numEntries: Long
     fun put(key: String, value: ByteArray)
     fun get(key: String): ByteArray?
     fun getAll(): List<Pair<String, ByteArray>>
@@ -116,6 +119,9 @@ class KVDbImpl(context: Context, fileName: String) :
     }
 
     override fun vacuum() = writableDatabase.execSQL("VACUUM")
+
+    override val numEntries: Long
+        get() = queryNumEntries(readableDatabase, KVEntry.TABLE_NAME)
 
     override fun put(key: String, value: ByteArray) {
         val values = ContentValues().apply {
