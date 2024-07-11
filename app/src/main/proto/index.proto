@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.stevesoltys.seedvault.proto;
+
+option java_multiple_files = true;
+
+message Index {
+  repeated bytes supersedes = 1;
+  repeated Pack packs = 2;
+
+  message Pack {
+    bytes id = 1;
+    repeated Blob blobs = 2;
+  }
+
+  message Blob {
+    bytes id = 1;
+    uint32 offset = 2;
+    uint32 length = 3;
+    uint32 uncompressedLength = 4;
+  }
+}
