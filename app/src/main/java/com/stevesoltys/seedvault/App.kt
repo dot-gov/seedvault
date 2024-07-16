@@ -21,6 +21,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.WorkManager
+import com.google.protobuf.ByteString
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -28,6 +29,10 @@ import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.storagePluginModuleSaf
 import com.stevesoltys.seedvault.plugins.webdav.storagePluginModuleWebDav
+import com.stevesoltys.seedvault.proto.Index
+import com.stevesoltys.seedvault.proto.IndexKt.blob
+import com.stevesoltys.seedvault.proto.IndexKt.pack
+import com.stevesoltys.seedvault.proto.index
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
@@ -51,6 +56,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
+import kotlin.random.Random
 
 /**
  * @author Steve Soltys
@@ -134,6 +140,31 @@ open class App : Application() {
         permitDiskReads {
             migrateTokenFromMetadataToSettingsManager()
         }
+
+        val i: Index = index {
+            supersedes += ByteString.copyFrom(Random.nextBytes(32))
+            supersedes += ByteString.copyFrom(Random.nextBytes(32))
+            packs += pack {
+                id = ByteString.copyFrom(Random.nextBytes(32))
+                blobs += blob {
+                    id = ByteString.copyFrom(Random.nextBytes(32))
+                    offset = 2
+                    length = 3
+                    uncompressedLength = 4
+                }
+            }
+            packs += pack {
+                id = ByteString.copyFrom(Random.nextBytes(32))
+                blobs += blob {
+                    id = ByteString.copyFrom(Random.nextBytes(32))
+                    offset = 22
+                    length = 33
+                    uncompressedLength = 44
+                }
+            }
+        }
+        println(i.toString())
+
         if (!isTest) migrateToOwnScheduling()
     }
 

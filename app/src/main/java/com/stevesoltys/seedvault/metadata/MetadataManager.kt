@@ -18,6 +18,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.SnapshotWriter
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
@@ -25,9 +26,11 @@ import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
+import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
+import java.util.zip.GZIPOutputStream
 
 private val TAG = MetadataManager::class.java.simpleName
 
@@ -64,6 +67,19 @@ internal class MetadataManager(
             }
             return field
         }
+
+    fun createSnapshot() {
+        val snapshot = SnapshotWriter.createSnapshot(metadata)
+        Log.e("TEST", "size: ${snapshot.serializedSize}")
+        val stream = ByteArrayOutputStream()
+        snapshot.writeTo(stream)
+        Log.e("TEST", "size: ${stream.size()}")
+        stream.reset()
+        val zippedStream = GZIPOutputStream(stream)
+        snapshot.writeTo(zippedStream)
+        Log.e("TEST", "size: ${stream.size()}")
+        zippedStream.close()
+    }
 
     val backupSize: Long get() = metadata.size
 
