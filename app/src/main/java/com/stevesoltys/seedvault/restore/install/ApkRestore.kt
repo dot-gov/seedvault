@@ -85,7 +85,7 @@ internal class ApkRestore(
         // re-install individual packages and emit updates (start from last and work your way up)
         for ((packageName, apkInstallResult) in packages.asIterable().reversed()) {
             try {
-                if (apkInstallResult.metadata.hasApk()) {
+                if (false && apkInstallResult.metadata.hasApk()) {
                     restore(backup, packageName, apkInstallResult.metadata)
                 } else {
                     mInstallResult.update { it.fail(packageName) }
