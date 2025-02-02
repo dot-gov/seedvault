@@ -66,7 +66,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.INTERACT_ACROSS_USERS_FULL` to use storage roots in other users (optional).
 * `android.permission.POST_NOTIFICATIONS` to inform users about backup status and errors.
 
-## Contributing
+## Contributing 
 Bug reports and pull requests are welcome on GitHub at https://github.com/seedvault-app/seedvault.
 
 See [DEVELOPMENT.md](app/development/DEVELOPMENT.md) for information
